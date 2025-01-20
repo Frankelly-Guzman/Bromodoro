@@ -1,50 +1,114 @@
-# React + TypeScript + Vite
+# Bromodoro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bromodoro is a social Pomodoro app designed to enhance focus, productivity, and collaboration. Users can utilize a Pomodoro timer, track their study habits, interact with friends using emojis, and view activity leaderboards showcasing users with the most study time. This app is a collaborative project for the KnightsHack Project Launch.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Pomodoro Timer**: Boost productivity with the popular Pomodoro technique.
+- **Social Interaction**: View friends' activity, send emojis, and encourage each other.
+- **Study Habit Tracking**: Monitor your own and your friends' study habits.
+- **Leaderboard**: Compete with friends by tracking study time and climbing the leaderboard.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Getting Started
 
-- Configure the top-level `parserOptions` property like this:
+Follow these steps to set up the Bromodoro app for development on your local machine.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Prerequisites
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Ensure you have the following installed:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- [Docker](https://www.docker.com/products/docker-desktop)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Node](https://nodejs.org/en/download)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Installation
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/<your-github-username>/bromodoro.git
+   cd bromodoro
+   ```
+
+2. **Environment Setup**:
+
+   Create a `.env` file in the root directory and configure the necessary environment variables. Refer to `.env.example` for guidance.
+
+3. **Start the Development Environment**:
+
+   Use the following command to build and start the app:
+
+   ```bash
+   docker-compose up app-dev
+   ```
+
+4. **Access the Application**:
+
+   Once the container is running, access the app in your browser at:
+
+   ```
+   http://localhost:5173
+   ```
+
+---
+
+## Development Workflow
+
+- **Build Changes**:
+  The app automatically reloads when you save changes to the source code.
+
+- **Stop the Application**:
+  To stop the app, use:
+
+  ```bash
+  docker-compose down
+  ```
+
+- **Run Tests**:
+  Ensure you have appropriate test scripts configured, then run:
+
+  ```bash
+  docker-compose exec app-dev npm test
+  ```
+
+---
+
+## Contributing
+
+We welcome contributions to Bromodoro! Follow these steps to contribute:
+
+1. Fork the repository and clone your fork.
+2. Create a new branch for your feature or bug fix:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. Commit your changes:
+
+   ```bash
+   git commit -m "Add your message here"
+   ```
+
+4. Push to your branch:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+5. Open a pull request on the main repository.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Contact
+
+For questions or support, reach out to the Bromodoro team at **your-email@example.com** or create an issue in this repository.
+
