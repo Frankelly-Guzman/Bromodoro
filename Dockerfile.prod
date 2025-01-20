@@ -1,0 +1,37 @@
+# Build: docker build -f Dockerfile.prod -t my-app:prod .
+
+# Step 1: Build stage
+FROM node:18-alpine AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json, package-lock.json, and other config files
+COPY package*.json tsconfig*.json ./
+
+# Install dependencies
+RUN npm install --production=false
+
+# Copy the rest of the app source code
+COPY . .
+
+# Build the production-ready files using Vite
+RUN npm run build
+
+# Step 2: Production stage
+FROM nginx:stable-alpine
+
+# Set the working directory
+WORKDIR /usr/share/nginx/html
+
+# Remove the default NGINX static content
+RUN rm -rf ./*
+
+# Copy the build output from the builder stage to the NGINX directory
+COPY --from=builder /app/dist ./
+
+# Expose the default NGINX port
+EXPOSE 80
+
+# Start NGINX server
+CMD ["nginx", "-g", "daemon off;"]
