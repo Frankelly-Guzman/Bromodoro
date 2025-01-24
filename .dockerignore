@@ -13,3 +13,4 @@ Dockerfile
 Dockerfile.dev
 Dockerfile.prod
 README.md
+.env

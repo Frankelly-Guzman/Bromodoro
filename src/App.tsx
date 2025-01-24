@@ -1,8 +1,19 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Main from './pages/Main'
+import Navbar from './components/Navbar'
+import { BackgroundProvider } from './utils/BackgroundContext'
 
 const App = () => {
   return (
-    <div className='min-h-screen min-w-screen bg-black text-white'>Hello, World!</div>
+    <BackgroundProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Main />} />
+          </Routes>
+        </Router>
+    </BackgroundProvider>
   )
 }
 
