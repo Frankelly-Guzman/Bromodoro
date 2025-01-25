@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { FaCog } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import SettingsButton from "./SettingsButton";
