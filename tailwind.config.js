@@ -19,7 +19,9 @@ export default {
           dark: "#7E0201",
         },
         gray: {
-          default: "#1E1E1E"
+          default: "#1E1E1E",
+          light: "#252525",
+          dark: "#101010"
         },
         orange: {
           default: "#FF890B"
