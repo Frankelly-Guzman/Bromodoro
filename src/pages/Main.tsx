@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useBackground } from "@/utils/BackgroundContext";
+import Timer from "../components/Timer"
 
 const Main = () => {
   const [working, setWorking] = useState(false);
@@ -15,12 +16,7 @@ const Main = () => {
 
   return (
     <div className={`flex min-w-screen min-h-screen ${bgColor}`}>
-      <button
-        onClick={() => setWorking((prev) => !prev)}
-        className="m-auto p-4 text-white bg-gray-800 rounded-lg"
-      >
-        Toggle Working
-      </button>
+      <Timer />
     </div>
   );
 };
