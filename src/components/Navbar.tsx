@@ -3,12 +3,13 @@ import { FaChartBar } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import SettingsButton from "./SettingsButton";
 import { useTimerContext } from "@/utils/TimerContext";
+import clsx from "clsx"
 
 const Navbar = () => {
   const timerContext = useTimerContext()
 
-  const buttonBgColor = timerContext.isRunning ? "bg-black" : "bg-gray-default"
-  const navBgColor = timerContext.isRunning ? "bg-black" : "bg-red-default"
+  const buttonBgColor = clsx(timerContext.isRunning ? "bg-black" : "bg-gray-default")
+  const navBgColor = clsx(timerContext.isRunning ? "bg-black" : `bg-${timerContext.color}-default`)
 
   return (
     <div

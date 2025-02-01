@@ -16,19 +16,19 @@ export function TimerContextProvider({ children }: TimerContextProps) {
 
   const [isRunning, setIsRunning] = useState(false);
   const [mode, setMode] = useState("work")
-  const [bgColor, setBgColor] = useState("red-default")
+  const [color, setColor] = useState("red")
 
   useEffect(() => {
     // Black when running, otherwise decide color based on timer mode 
     if (isRunning) {
-      setBgColor("black")
+      setColor("black")
     } else {
       if (mode == "work") {
-        setBgColor("red-default")
+        setColor("red")
       } else if (mode == "break") {
-        setBgColor("blue-default")
+        setColor("blue")
       } else {
-        setBgColor("purple-default")
+        setColor("purple")
       }
     }
   }, [isRunning, mode]) // Run hook func. when isRunning or mode change
@@ -39,7 +39,8 @@ export function TimerContextProvider({ children }: TimerContextProps) {
     setIsRunning,
     mode,
     setMode,
-    bgColor
+    color,
+    setColor
   }
 
   return (

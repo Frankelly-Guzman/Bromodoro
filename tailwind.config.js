@@ -5,6 +5,15 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}'
   ],
+  safelist: [
+    { pattern: /from-(red|blue|purple)-default/ },
+    { pattern: /from-(red|blue|purple)-dark/ },
+    { pattern: /to-(red|blue|purple)-default/ },
+    { pattern: /to-(red|blue|purple)-dark/ },
+    { pattern: /bg-(red|blue|purple)-default/ },
+    { pattern: /bg-(red|blue|purple)-dark/ },
+    { pattern: /bg-(red|blue|purple)/ },
+  ],
   theme: {
     extend: {
       borderRadius: {
