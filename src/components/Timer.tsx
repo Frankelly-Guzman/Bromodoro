@@ -1,4 +1,5 @@
-import { FaArrowRotateLeft, FaBackwardStep, FaPause, FaFire } from "react-icons/fa6"
+import { FaArrowRotateLeft, FaBackwardStep, FaPause, FaPlay, FaFire } from "react-icons/fa6"
+import { useTimerContext } from "@/utils/TimerContext"
 
 const flexCenteredAll = [
   "flex",
@@ -6,16 +7,21 @@ const flexCenteredAll = [
   "items-center"
 ].join(" ")
 
+// WARN: Not doing anims for now because it looks awkward when changing stuff to black
 const animated = [
-  "transition-all",
-  "duration-[0.5s]",
 ].join(" ")
 
 interface TimerButtonProps {
   icon?: React.ReactNode
+  action?: () => void;
 }
 
-function TimerButton({ icon }: TimerButtonProps) {
+// TODO: Clean up usage of context; maybe we could store a color palette instead of asking whether we are running
+// We will actually NEED this when we implement timer modes!
+
+function TimerButton({ icon, action }: TimerButtonProps) {
+  const timerContext = useTimerContext();
+
   const bgStyles = [
     flexCenteredAll,
     animated,
@@ -26,24 +32,30 @@ function TimerButton({ icon }: TimerButtonProps) {
     "pb-4",
   ].join(" ")
 
+  /*
   const bgHoverStyles = [
-    "hover:bg-red-dark",
+    timerContext.isRunning ? "bg-black" : "hover:bg-red-dark",
   ].join(" ")
+  */
 
   const buttonBgStyles = [
     flexCenteredAll,
     animated,
+    timerContext.isRunning ? "bg-black" : "bg-gray-default",
+    timerContext.isRunning ? "bg-black" : "shadow-[0px_10px_0px_rgba(0,0,0,0.95)]",
     "w-[103px]",
     "h-[103px]",
-    "bg-gray-default",
     "rounded-[25px]",
-    "shadow-[0px_10px_0px_rgba(0,0,0,0.95)]",
   ].join(" ")
+
+  const buttonBgHoverStyles = [
+    timerContext.isRunning ? "bg-black" : "hover:bg-gray-light",
+  ]
 
   const buttonBgActiveStyles = [
     "transform active:translate-y-[10px]",
     "active:shadow-[0px_0px_0px_rgba(0,0,0,0)]",
-    "active:bg-black",
+    "active:bg-gray-dark",
   ].join(" ")
 
   const iconStyle = [
@@ -53,39 +65,41 @@ function TimerButton({ icon }: TimerButtonProps) {
   ].join(" ")
 
   return (
-    <div className={`${bgStyles} ${bgHoverStyles}`}>
-      <div className={`${buttonBgStyles} ${buttonBgActiveStyles}`}>
+    <div className={`${bgStyles}`}>
+      <button type="button" onClick={action} className={`${buttonBgStyles} ${buttonBgHoverStyles} ${buttonBgActiveStyles}`}>
         <div className={iconStyle}>
           {icon}
         </div>
-      </div>
+      </button>
     </div >
   )
 }
 
 function Timer() {
+  const timerContext = useTimerContext()
+
   const timerBgStyles = [
     flexCenteredAll,
+    timerContext.isRunning ? "" : "bg-gradient-to-b",
+    timerContext.isRunning ? "" : "from-red-default",
+    timerContext.isRunning ? "" : "to-red-dark",
+    timerContext.isRunning ? "" : "shadow-[0px_15px_0px_rgba(0,0,0,0.5)]",
     "flex-col",
     "m-auto",
     `w-[660px]`,
     `h-[547px]`,
     "rounded-[72px]",
-    "bg-gradient-to-b",
-    "from-red-default",
-    "to-red-dark",
-    "shadow-[0px_15px_0px_rgba(0,0,0,0.5)]"
   ].join(" ")
 
   const timeBgStyles = [
     flexCenteredAll,
+    timerContext.isRunning ? "bg-black" : "bg-gray-default",
+    timerContext.isRunning ? "" : "shadow-[0px_-10px_0px_rgba(0,0,0,0.5)]",
     "flex-col",
     "mt-[32px]",
     "w-[597px]",
     "h-[50%]",
     "rounded-[72px]",
-    "bg-gray-default",
-    "shadow-[0px_-10px_0px_rgba(0,0,0,0.5)]"
   ].join(" ")
 
   const bigTimerTextStyles = [
@@ -110,16 +124,25 @@ function Timer() {
     "h-[50%]",
   ].join(" ")
 
+  // Control action functions 
+  function onPlayPause() {
+    if (timerContext.isRunning) {
+      timerContext.setIsRunning(false);
+    } else {
+      timerContext.setIsRunning(true);
+    }
+  }
+
   return (
     <div className={timerBgStyles}>
       <div className={timeBgStyles}>
-        <div className={smallTimerTextStyles}>{<FaFire className="text-orange-default" />}0</div>
+        <div className={smallTimerTextStyles}>{<FaFire className="text-white" />}0</div>
         <div className={`${bigTimerTextStyles} mt-[-36px]`}>25:00</div>
         <div className={`${smallTimerTextStyles} mt-[-28px]`}>WORK 0/4</div>
       </div>
       <div className={buttonContainerStyles}>
         <TimerButton icon={<FaBackwardStep />} />
-        <TimerButton icon={<FaPause />} />
+        <TimerButton icon={timerContext.isRunning ? <FaPause /> : <FaPlay />} action={onPlayPause} />
         <TimerButton icon={<FaArrowRotateLeft />} />
       </div>
     </div >
