@@ -15,7 +15,7 @@ export function TimerContextProvider({ children }: TimerContextProps) {
   // This is all used to define background color 
 
   const [isRunning, setIsRunning] = useState(false);
-  const [mode, setMode] = useState("work")
+  const [mode, setMode] = useState("longbreak") // "work", "break", or "longbreak"
   const [color, setColor] = useState("red")
 
   useEffect(() => {
