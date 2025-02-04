@@ -5,6 +5,15 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}'
   ],
+  safelist: [
+    { pattern: /from-(red|blue|purple)-default/ },
+    { pattern: /from-(red|blue|purple)-dark/ },
+    { pattern: /to-(red|blue|purple)-default/ },
+    { pattern: /to-(red|blue|purple)-dark/ },
+    { pattern: /bg-(red|blue|purple)-default/ },
+    { pattern: /bg-(red|blue|purple)-dark/ },
+    { pattern: /bg-(red|blue|purple)/ },
+  ],
   theme: {
     extend: {
       borderRadius: {
@@ -15,12 +24,18 @@ export default {
       colors: {
         red: {
           default: "#FF0200",
-          medium: "#B50302",
           dark: "#7E0201",
+        },
+        blue: {
+          default: "#3169D4",
+          dark: "#224A92",
+        },
+        purple: {
+          default: "#59368F",
+          dark: "#462b71",
         },
         gray: {
           default: "#1E1E1E",
-          light: "#252525",
           dark: "#101010"
         },
         orange: {
