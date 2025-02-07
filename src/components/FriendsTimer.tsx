@@ -2,7 +2,6 @@ import React from "react";
 import {useState, useEffect} from "react";
 import { FaPause } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
-import { useBackground } from "../utils/BackgroundContext";
 import { Button } from "./ui/button";
 import { FaFire } from "react-icons/fa6";
 
@@ -14,14 +13,6 @@ interface FriendsTimerProps {
 }
 
 const FriendsTimer=()=>{
-    const { bgColor } = useBackground();
-
-    const containerStyle=`
-    ${bgColor}
-    flex
-    justify-evenly
-    `
-
     const outerSquare=`
     flex
     flex-col
@@ -32,16 +23,12 @@ const FriendsTimer=()=>{
     bg-sky-600
     shadow-[0px_5px_0px_rgba(0,0,0,0.5)]
     `
-    
+
     return(
-        <>
-            <span className={containerStyle}>
-                <span className={outerSquare}>
-                        <FriendsTimerInfo/>
-                        <FriendsPauseButton/>
-                </span>
-            </span>
-        </>
+        <div className={outerSquare}>
+            <FriendsTimerInfo/>
+            <FriendsPauseButton/>
+        </div>
     );
 };
 
@@ -50,6 +37,7 @@ interface FriendsPauseButtonProps{
 }
 
 const FriendsPauseButton=({paused=true}: FriendsPauseButtonProps)=>{
+    // Is the timer paused? (True/False)
     const [isPaused, setState] = useState(true);
     const switchState = () => {
         setState((prev) => !prev);
@@ -64,11 +52,12 @@ const FriendsPauseButton=({paused=true}: FriendsPauseButtonProps)=>{
     rounded-[10px]
     bg-slate-1000
     text-white"
+    shadow-[0px_5px_0px_rgba(0,0,0,0.65)]
     `
 
     const iconStyle=`
-    w-1/4
-    h-1/4
+    w-1/2
+    h-1/2
     `
 
     return (
@@ -86,6 +75,7 @@ const FriendsPauseButton=({paused=true}: FriendsPauseButtonProps)=>{
         </span>
     )
 };
+
 interface FriendsTimerInfoProps {
     time?: number;
     paused?: boolean;
@@ -93,21 +83,22 @@ interface FriendsTimerInfoProps {
 }
 
 const FriendsTimerInfo=({time = 20, streak = 0}: FriendsTimerInfoProps)=>{
+    const [workState, setState] = useState("Break"); //Work, Break or LongBreak?
+    const [curTime, setTime] = useState(time);// Current Time 
+
     const containerStyle=`
     bg-black
     flex
     flex-col
     rounded-[30px]
-    text-white
     h-1/2 w-3/4
-    justify-evenly
     items-center
     shadow-[0px_-5px_0px_rgba(0,0,0,0.5)]
     bg-slate-1000 
-    text-white"
+    font-extrabold
+    text-white
     `
-    const [workState, setState] = useState("Break");
-    const [curTime, setTime] = useState(time);
+
     useEffect(() => {
             if (curTime > 0) {
                 const timer = setInterval(() => {
@@ -128,14 +119,11 @@ const FriendsTimerInfo=({time = 20, streak = 0}: FriendsTimerInfoProps)=>{
     const iteration = 0;
     const maxIterations = 4;
 
-    
-    
     return (
         <>
             <span className={containerStyle}>
-                <p>{streak} <FaFire className= "inline" color="orange"/></p>
-                <p className="text-[25px]">{String(Math.floor(curTime / 60)).padStart(2, '0')}:
-                {String(curTime % 60).padStart(2, '0')}</p>
+                <div className="flex justify-center items-center gap-0.5">{<FaFire className= "inline" color="orange"/>} {streak}</div>
+                <p className="text-[25px]">{String(Math.floor(curTime / 60)).padStart(2, '0')}:{String(curTime % 60).padStart(2, '0')}</p>
                 <p className="text-[11px] pb-4">{workState} {iteration}/{maxIterations}</p>
             </span>
         </>
