@@ -57,7 +57,7 @@ const SettingsButton = () => {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
-        <Button className="flex flex-row gap-2 py-6 hover:bg-gray-light">
+        <Button className="flex flex-row gap-2 py-6 hover:bg-gray-500">
           <FaCog />
           Settings
         </Button>
