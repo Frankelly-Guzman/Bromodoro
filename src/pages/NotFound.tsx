@@ -1,5 +1,4 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../components/generic/button';
 import { useNavigate } from 'react-router-dom';
 import { FaFaceFrown } from "react-icons/fa6";
 

@@ -1,5 +1,5 @@
-import { useTimerContext } from "@/utils/TimerContext";
-import Timer from "../components/Timer"
+import { useTimerContext } from "../components/bromo/TimerContext";
+import Timer from "../components/bromo/Timer"
 import clsx from "clsx"
 
 const Main = () => {

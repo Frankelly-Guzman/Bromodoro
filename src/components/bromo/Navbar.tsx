@@ -1,8 +1,8 @@
-import { Button } from "./ui/button";
+import { Button } from "../generic/button";
 import { FaChartBar } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import SettingsButton from "./SettingsButton";
-import { useTimerContext } from "@/utils/TimerContext";
+import { useTimerContext } from "../bromo/TimerContext";
 import clsx from "clsx"
 
 const Navbar = () => {

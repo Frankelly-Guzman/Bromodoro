@@ -14,12 +14,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../generic/dropdown-menu";
 import { FaCog } from "react-icons/fa";
 import { FaClock } from "react-icons/fa";
-import { Button } from "./ui/button";
-import { Switch } from "./ui/switch";
-import { useTimerContext } from "@/utils/TimerContext";
+import { Button } from "../generic/button";
+import { Switch } from "../generic/switch";
+import { useTimerContext } from "../bromo/TimerContext";
 
 /**
  * SettingsButton Component

@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Main from './pages/Main'
-import Navbar from './components/Navbar'
-import { TimerContextProvider } from './utils/TimerContext'
-import NotFound from './pages/NotFound'
+import Main from '../pages/Main'
+import Navbar from '../components/bromo/Navbar'
+import { TimerContextProvider } from '../components/bromo/TimerContext'
+import NotFound from '../pages/NotFound'
 
 const App = () => {
   return (
