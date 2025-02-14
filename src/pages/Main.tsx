@@ -10,7 +10,7 @@ const Main = () => {
   )
 
   return (
-    <div className={`flex min-w-screen min-h-screen ${bgColor}`}>
+    <div className={`flex items-center justify-center min-w-screen min-h-screen ${bgColor}`}>
       <Timer />
     </div>
   );
