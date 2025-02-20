@@ -1,19 +1,20 @@
-import { useTimerContext } from "@/utils/TimerContext";
+import { UseTimerContext } from "@/utils/TimerContext";
 import Timer from "../components/Timer"
-import clsx from "clsx"
 
-const Main = () => {
-  const timerContext = useTimerContext()
+export default function Main() {
+  const ctx = UseTimerContext()
 
-  const bgColor = clsx(
-    timerContext.isRunning ? "bg-black" : `bg-${timerContext.color}-default`
-  )
+  const bgTransition = `background ${ctx.transitionDuration}s ease`
 
   return (
-    <div className={`flex min-w-screen min-h-screen ${bgColor}`}>
+    <div
+      className="flex flex-col items-center justify-center w-screen h-screen"
+      style={{
+        background: ctx.timerPalette.bgStart,
+        transition: bgTransition
+      }}
+    >
       <Timer />
     </div>
   );
 };
-
-export default Main;

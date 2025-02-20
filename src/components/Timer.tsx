@@ -1,62 +1,33 @@
-import { FaArrowRotateLeft, FaBackwardStep, FaPause, FaPlay, FaFire } from "react-icons/fa6"
-import { useTimerContext } from "@/utils/TimerContext"
+import { FaArrowRotateLeft, FaBackwardStep, FaPlay, FaFire, FaPause } from "react-icons/fa6"
+import { UseTimerContext } from "@/utils/TimerContext"
+import { useCallback, useEffect, useState } from "react"
+import { pomodoroTimer } from "../scripts/pomodoroTimer"
 import clsx from "clsx"
-
-const flexCenteredAll = clsx(
-  "flex",
-  "justify-center",
-  "items-center"
-)
 
 interface TimerButtonProps {
   icon?: React.ReactNode
   action?: () => void;
 }
 
-// TODO: Clean up usage of context; maybe we could store a color palette instead of asking whether we are running
-// We will actually NEED this when we implement timer modes!
-
 function TimerButton({ icon, action }: TimerButtonProps) {
-  const timerContext = useTimerContext();
+  const ctx = UseTimerContext();
 
-  const bgStyles = clsx(
-    flexCenteredAll,
-    "bg-none",
-    "rounded-[25px]",
-    "px-2",
-    "pt-2",
-    "pb-4",
-  )
-
-  const buttonBgStyles = clsx(
-    flexCenteredAll,
-    timerContext.isRunning ? "bg-black" : "bg-gray-default",
-    timerContext.isRunning ? "bg-black" : "shadow-[0px_10px_0px_rgba(0,0,0,0.95)]",
-    "w-[103px]",
-    "h-[103px]",
-    "rounded-[25px]",
-  )
-
-  const buttonBgHoverStyles = clsx(
-    timerContext.isRunning ? "bg-black" : "hover:bg-gray-light",
-  )
-
-  const buttonBgActiveStyles = clsx(
-    "transform active:translate-y-[10px]",
-    "active:shadow-[0px_0px_0px_rgba(0,0,0,0)]",
-    "active:bg-gray-dark",
-  )
-
-  const iconStyle = clsx(
-    "font-extrabold",
-    "text-white",
-    "text-[64px]",
-  )
+  const transformTransition = `all ${ctx.transitionDuration}s ease`
 
   return (
-    <div className={`${bgStyles}`}>
-      <button type="button" onClick={action} className={`${buttonBgStyles} ${buttonBgHoverStyles} ${buttonBgActiveStyles}`}>
-        <div className={iconStyle}>
+    <div
+      className="flex justify-center items-center relative rounded-[25px] p-1 shadow-[0px_10px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-3"
+      style={{
+        background: ctx.timerPalette.bgButton,
+        transition: transformTransition
+      }}
+    >
+      <button
+        type="button"
+        onClick={action}
+        className="flex items-center justify-center w-[103px] h-[103px] rounded-[25px]"
+      >
+        <div className="font-extrabold text-white text-[64px] mb-1">
           {icon}
         </div>
       </button>
@@ -65,77 +36,75 @@ function TimerButton({ icon, action }: TimerButtonProps) {
 }
 
 function Timer() {
-  const timerContext = useTimerContext()
-
-  const timerBgStyles = clsx(
-    flexCenteredAll,
-    timerContext.isRunning ? [
-      "bg-black"
-    ] : [
-      "bg-gradient-to-b",
-      `from-${timerContext.color}-default`,
-      `to-${timerContext.color}-dark`,
-      "shadow-[0px_15px_0px_rgba(0,0,0,0.5)]",
-    ],
-    "flex-col",
-    "m-auto",
-    `w-[660px]`,
-    `h-[547px]`,
-    "rounded-[72px]",
-  )
-
-  const timeBgStyles = clsx(
-    flexCenteredAll,
-    timerContext.isRunning ? "bg-black" : "bg-gray-default",
-    timerContext.isRunning && "shadow-[0px_-10px_0px_rgba(0,0,0,0.5)]",
-    "flex-col",
-    "mt-[32px]",
-    "w-[597px]",
-    "h-[50%]",
-    "rounded-[72px]",
-  )
-
-  const bigTimerTextStyles = clsx(
-    "font-extrabold",
-    "text-white",
-    "text-center",
-    "text-[128px]",
-  )
+  const ctx = UseTimerContext()
 
   const smallTimerTextStyles = clsx(
-    flexCenteredAll,
-    "gap-[6px]",
-    "font-medium",
-    "text-[32px]",
-    "text-white",
+    "flex items-center justify-center gap-[6px] font-medium text-[32px] text-white"
   )
 
-  const buttonContainerStyles = clsx(
-    flexCenteredAll,
-    "flex-row",
-    "gap-[20px]",
-    "h-[50%]",
-  )
+  // tailwind support for styling things with variables isnt very good
+  // we will use the style attribute to handle things that change using arbitrary style values 
+  // e.g. the timer background
 
-  // Control action functions 
-  function onPlayPause() {
-    if (timerContext.isRunning) {
-      timerContext.setIsRunning(false);
+  const bgTransition = `background ${ctx.transitionDuration}s ease`
+  const colorTransition = `color ${ctx.transitionDuration}s ease`
+
+  const [timeLeft, setTimeLeft] = useState<string>(pomodoroTimer.getTimeString())
+  const [intervalsLeft, setIntervalsLeft] = useState<string>(pomodoroTimer.getIntervalsString())
+
+  // usestate triggers rerender on change
+  // this recreates everything, even functions
+  // recreated functions will pull the new state
+  // if we dont recreate functions on rerender, they will always pull old state value
+  // NOTE: when a function doesnt interact with component state, its best not to recreate it
+
+  const updateTimeLeft = useCallback(() => {
+    setTimeLeft(pomodoroTimer.getTimeString())
+  }, [])
+
+  const onTimerStop = useCallback(() => {
+    ctx.setTimerRunning(false)
+    setIntervalsLeft(pomodoroTimer.getIntervalsString())
+  }, [ctx]) // WARN: not sure why we need to pass this as dep, READ about react and function re-creations
+
+  useEffect(() => {
+    pomodoroTimer.on("tick", updateTimeLeft)
+    pomodoroTimer.on("stop", onTimerStop)
+  }, [updateTimeLeft, onTimerStop])
+
+  function onPlayPauseClick() {
+    if (ctx.timerRunning) {
+      ctx.setTimerRunning(false)
+      pomodoroTimer.stop()
     } else {
-      timerContext.setIsRunning(true);
+      ctx.setTimerRunning(true)
+      pomodoroTimer.start()
     }
   }
 
   return (
-    <div className={timerBgStyles}>
-      <div className={timeBgStyles}>
-        <div className={smallTimerTextStyles}>{<FaFire className="text-white" />}0</div>
-        <div className={`${bigTimerTextStyles} mt-[-36px]`}>25:00</div>
-        <div className={`${smallTimerTextStyles} mt-[-28px]`}>WORK 0/4</div>
+    <div
+      className="flex items-center justify-center flex-col w-[660px] h-[547px] rounded-[72px] relative overflow-hidden"
+      style={{
+        background: ctx.timerPalette.bgStart,
+        transition: bgTransition
+      }}
+    >
+      <div className="absolute bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.6)] w-full h-full z-0" />
+      <div
+        className="flex items-center justify-center flex-col mt-[32px] w-[597px] h-[50%] rounded-[72px] z-20"
+        style={{
+          background: ctx.timerPalette.bgButton,
+          transition: bgTransition
+        }}
+      >
+        <div className={smallTimerTextStyles}>{<FaFire style={{ color: ctx.timerPalette.streakFlame, transition: colorTransition }} />}0</div>
+        <div className="font-extrabold text-white text-center text-[128px] mt-[-36px]">{timeLeft}</div>
+        <div className={`${smallTimerTextStyles} mt-[-28px]`}>WORK {intervalsLeft}/4</div>
       </div>
-      <div className={buttonContainerStyles}>
+      <div className="flex items-center justify-center flex-row gap-[20px] h-[50%] z-30">
         <TimerButton icon={<FaBackwardStep />} />
-        <TimerButton icon={timerContext.isRunning ? <FaPause /> : <FaPlay />} action={onPlayPause} />
+        <TimerButton icon={ctx.timerRunning ? <FaPause /> : <FaPlay />} action={onPlayPauseClick} />
         <TimerButton icon={<FaArrowRotateLeft />} />
       </div>
     </div >

@@ -1,63 +1,106 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, SetStateAction, useContext, useEffect, useState } from "react";
 
-// Timer context itself 
-const TimerContext = createContext<any>(null);
-
-// Timer context provider
-// Stuff related to the timer must go in here!
-interface TimerContextProps {
-  children: React.ReactNode
+// NOTE: enums use string values for readability but we could omit and just leave numbers
+export enum TimerMode {
+  Work = "WORK",
+  Break = "BREAK",
+  LongBreak = "LONG_BREAK"
 }
 
-export function TimerContextProvider({ children }: TimerContextProps) {
-  // Is timer running? (True/False)
-  // What mode is timer in? (Work/Rest/Long Rest)
-  // This is all used to define background color 
+type TimerColorPalette = {
+  bgStart: string,
+  bgEnd: string,
+  bgButton: string,
+  streakFlame: string
+}
 
-  const [isRunning, setIsRunning] = useState(false);
-  const [mode, setMode] = useState("longbreak") // "work", "break", or "longbreak"
-  const [color, setColor] = useState("red")
+type TimerContextInfo = {
+  timerMode: TimerMode,
+  setTimerMode: React.Dispatch<SetStateAction<TimerMode>>,
+  timerRunning: boolean,
+  setTimerRunning: React.Dispatch<SetStateAction<boolean>>,
+  timerPalette: TimerColorPalette,
+  transitionDuration: number
+}
+
+const TimerContext = createContext<TimerContextInfo | null>(null);
+
+export function TimerContextProvider({ children }: { children: React.ReactNode }) {
+  const [timerMode, setTimerMode] = useState<TimerMode>(TimerMode.Work)
+  const [timerRunning, setTimerRunning] = useState(false)
+  const [timerPalette, setTimerPalette] = useState<TimerColorPalette>({
+    bgStart: "black",
+    bgEnd: "black",
+    bgButton: "black",
+    streakFlame: "white",
+  }) // modify using ... operator with set function since we can't mutate directly
 
   useEffect(() => {
-    // Black when running, otherwise decide color based on timer mode 
-    if (isRunning) {
-      setColor("black")
+    if (timerRunning) {
+      // full black timer when running to be less distracting
+      setTimerPalette({
+        bgStart: "black",
+        bgEnd: "black",
+        bgButton: "black",
+        streakFlame: "white"
+      })
     } else {
-      if (mode == "work") {
-        setColor("red")
-      } else if (mode == "break") {
-        setColor("blue")
-      } else {
-        setColor("purple")
+      // change background depending on mode
+      switch (timerMode) {
+        case TimerMode.Work:
+          setTimerPalette((prevPalette) => ({
+            ...prevPalette,
+            bgStart: "#FF0200",
+            bgEnd: "#7E0201"
+          }))
+          break;
+        case TimerMode.Break:
+          setTimerPalette((prevPalette) => ({
+            ...prevPalette,
+            bgStart: "#316AD5",
+            bgEnd: "#234A93"
+          }))
+          break;
+        case TimerMode.LongBreak:
+          setTimerPalette((prevPalette) => ({
+            ...prevPalette,
+            bgStart: "#FF6EAD",
+            bgEnd: "#821243"
+          }))
+          break;
       }
-    }
-  }, [isRunning, mode]) // Run hook func. when isRunning or mode change
 
-  // Pack context values
-  const contextInfo = {
-    isRunning,
-    setIsRunning,
-    mode,
-    setMode,
-    color,
-    setColor
+      // the streak flame and buttons background share the same colors when not running
+      setTimerPalette((prevPalette) => ({
+        ...prevPalette,
+        bgButton: "#1E1E1E",
+        streakFlame: "#FF890B"
+      }))
+
+    }
+  }, [timerMode, timerRunning])
+
+  // exclude setter for timer palette bc we handle that internally here 
+  const timerState: TimerContextInfo = {
+    timerMode,
+    setTimerMode,
+    timerRunning,
+    setTimerRunning,
+    timerPalette,
+    transitionDuration: 0.2
   }
 
   return (
-    // If any component inside this background provider asks for BackgroundContext, give them the packed values 
-    // We'll be asking for these values with useTimerContext()
-    <TimerContext.Provider value={contextInfo}>
+    <TimerContext.Provider value={timerState}>
       {children}
     </TimerContext.Provider>
   );
 };
 
-// Hook to use context
-export function useTimerContext() {
+export function UseTimerContext() {
   const context = useContext(TimerContext);
-
   if (!context) {
-    throw new Error("TimerContext must be used inside a TimerContextProvider!");
+    throw new Error("no context cuuh");
   }
 
   return context;
