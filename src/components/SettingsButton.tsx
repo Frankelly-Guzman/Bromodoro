@@ -6,7 +6,9 @@
  * Additionally, it has toggle switches for various settings.
  */
 
-import React, { useState } from "react";
+import { pomodoroTimer } from "../scripts/pomodoroTimer"
+
+import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +35,11 @@ const SettingsButton = () => {
   const [toggleA, setToggleA] = useState(false);
   const [toggleB, setToggleB] = useState(false);
   const [toggleC, setToggleC] = useState(false);
+
+  // convert all given inputs to min and sec
+  useEffect(() => {
+    pomodoroTimer.setTimeLeft(workingTime * 60 * 1000)
+  }, [workingTime])
 
   /**
    * Handle input click event

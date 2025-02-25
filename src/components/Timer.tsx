@@ -1,4 +1,4 @@
-import { FaArrowRotateLeft, FaBackwardStep, FaPlay, FaFire, FaPause } from "react-icons/fa6"
+import { FaArrowRotateLeft, FaPlay, FaFire, FaPause, FaForwardStep } from "react-icons/fa6"
 import { UseTimerContext } from "@/utils/TimerContext"
 import { useCallback, useEffect, useState } from "react"
 import { pomodoroTimer } from "../scripts/pomodoroTimer"
@@ -49,6 +49,7 @@ function Timer() {
   const bgTransition = `background ${ctx.transitionDuration}s ease`
   const colorTransition = `color ${ctx.transitionDuration}s ease`
 
+  const [streak, setStreak] = useState<string>(pomodoroTimer.getStreakString())
   const [timeLeft, setTimeLeft] = useState<string>(pomodoroTimer.getTimeString())
   const [intervalsLeft, setIntervalsLeft] = useState<string>(pomodoroTimer.getIntervalsString())
 
@@ -64,13 +65,23 @@ function Timer() {
 
   const onTimerStop = useCallback(() => {
     ctx.setTimerRunning(false)
+    ctx.setTimerMode(pomodoroTimer.getTimerMode())
+
     setIntervalsLeft(pomodoroTimer.getIntervalsString())
-  }, [ctx]) // WARN: not sure why we need to pass this as dep, READ about react and function re-creations
+    setStreak(pomodoroTimer.getStreakString()) // we don't need to do this every stop but it's too much to give it its dedicated event
+    
+    updateTimeLeft()
+  }, [ctx, updateTimeLeft]) // WARN: not sure why we need to pass this as dep, READ about react and function re-creations
+
+  const onTimerUpdate = useCallback(() => {
+    setTimeLeft(pomodoroTimer.getTimeString())
+  }, [])
 
   useEffect(() => {
     pomodoroTimer.on("tick", updateTimeLeft)
     pomodoroTimer.on("stop", onTimerStop)
-  }, [updateTimeLeft, onTimerStop])
+    pomodoroTimer.on("update", onTimerUpdate)
+  }, [updateTimeLeft, onTimerStop, onTimerUpdate])
 
   function onPlayPauseClick() {
     if (ctx.timerRunning) {
@@ -80,6 +91,10 @@ function Timer() {
       ctx.setTimerRunning(true)
       pomodoroTimer.start()
     }
+  }
+
+  function onSkipClick() {
+    pomodoroTimer.next()
   }
 
   return (
@@ -98,14 +113,14 @@ function Timer() {
           transition: bgTransition
         }}
       >
-        <div className={smallTimerTextStyles}>{<FaFire style={{ color: ctx.timerPalette.streakFlame, transition: colorTransition }} />}0</div>
+        <div className={smallTimerTextStyles}>{<FaFire style={{ color: ctx.timerPalette.streakFlame, transition: colorTransition }} />}{streak}</div>
         <div className="font-extrabold text-white text-center text-[128px] mt-[-36px]">{timeLeft}</div>
-        <div className={`${smallTimerTextStyles} mt-[-28px]`}>WORK {intervalsLeft}/4</div>
+        <div className={`${smallTimerTextStyles} mt-[-28px]`}>WORK {intervalsLeft}</div>
       </div>
       <div className="flex items-center justify-center flex-row gap-[20px] h-[50%] z-30">
-        <TimerButton icon={<FaBackwardStep />} />
-        <TimerButton icon={ctx.timerRunning ? <FaPause /> : <FaPlay />} action={onPlayPauseClick} />
         <TimerButton icon={<FaArrowRotateLeft />} />
+        <TimerButton icon={ctx.timerRunning ? <FaPause /> : <FaPlay />} action={onPlayPauseClick} />
+        <TimerButton icon={<FaForwardStep />} action={onSkipClick} />
       </div>
     </div >
   )

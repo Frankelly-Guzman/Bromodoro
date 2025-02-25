@@ -1,11 +1,6 @@
 import React, { createContext, SetStateAction, useContext, useEffect, useState } from "react";
-
-// NOTE: enums use string values for readability but we could omit and just leave numbers
-export enum TimerMode {
-  Work = "WORK",
-  Break = "BREAK",
-  LongBreak = "LONG_BREAK"
-}
+import TimerMode from "../utils/TimerMode"
+import { pomodoroTimer } from "../scripts/pomodoroTimer"
 
 type TimerColorPalette = {
   bgStart: string,
