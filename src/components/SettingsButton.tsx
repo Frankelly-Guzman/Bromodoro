@@ -6,7 +6,9 @@
  * Additionally, it has toggle switches for various settings.
  */
 
-import React, { useState } from "react";
+import { pomodoroTimer } from "../scripts/pomodoroTimer"
+
+import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +21,6 @@ import { FaCog } from "react-icons/fa";
 import { FaClock } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
-import { useTimerContext } from "@/utils/TimerContext";
 
 /**
  * SettingsButton Component
@@ -34,6 +35,11 @@ const SettingsButton = () => {
   const [toggleA, setToggleA] = useState(false);
   const [toggleB, setToggleB] = useState(false);
   const [toggleC, setToggleC] = useState(false);
+
+  // convert all given inputs to min and sec
+  useEffect(() => {
+    pomodoroTimer.setTimeLeft(workingTime * 60 * 1000)
+  }, [workingTime])
 
   /**
    * Handle input click event
@@ -55,20 +61,15 @@ const SettingsButton = () => {
     setToggle((prev) => !prev); // Toggle the state
   };
 
-  // BG color
-  // TODO: Once again we need a palette instead of a boolcheck
-  const timerContext = useTimerContext()
-  const bgColor = timerContext.isRunning ? "bg-black" : "bg-gray-default"
-
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
-        <Button className={`flex flex-row gap-2 py-6 ${bgColor} hover:bg-gray-light`}>
+        <Button className="flex flex-row gap-2 py-6 bg-gray-default hover:bg-gray-light">
           <FaCog />
           Settings
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={`${bgColor} text-white`}>
+      <DropdownMenuContent className="bg-gray-default text-white">
         <DropdownMenuLabel className="flex flex-row gap-2 items-center">
           <FaClock />
           Timer
