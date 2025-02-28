@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
-import { FaChartBar } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import SettingsButton from "./SettingsButton";
+import ReportsButton from "./ReportsButton";
 
 const Navbar = () => {
   return (
@@ -9,10 +9,7 @@ const Navbar = () => {
       className="absolute w-full flex justify-end items-center p-4 gap-4"
     >
       <SettingsButton />
-      <Button className="flex flex-row gap-2 py-6 bg-gray-default">
-        <FaChartBar />
-        Reports
-      </Button>
+      <ReportsButton />
       <Button className="flex flex-row gap-2 py-6 bg-gray-default">
         <BsFillPeopleFill />
         Bromodoros
