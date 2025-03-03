@@ -5,7 +5,13 @@ import SettingsButton from "./SettingsButton";
 import { useTimerContext } from "@/utils/TimerContext";
 import clsx from "clsx"
 
-const Navbar = () => {
+
+type NavbarProps = {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isSidebarOpen: boolean) => void;
+}
+
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen}: NavbarProps) => {
   const timerContext = useTimerContext()
 
   const buttonBgColor = clsx(timerContext.isRunning ? "bg-black" : "bg-gray-default")
@@ -20,10 +26,13 @@ const Navbar = () => {
         <FaChartBar />
         Reports
       </Button>
-      <Button className={`flex flex-row gap-2 py-6 ${buttonBgColor} hover:bg-gray-light`}>
-        <BsFillPeopleFill />
-        Bromodoros
-      </Button>
+      <Button 
+        className={`flex flex-row gap-2 py-6 ${buttonBgColor} hover:bg-gray-light`}
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+      <BsFillPeopleFill />
+      Bromodoros
+       </Button>
     </div>
   );
 };
